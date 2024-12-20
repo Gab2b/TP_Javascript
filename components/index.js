@@ -1,6 +1,6 @@
 // <->  MAIN
 
-document.addEventListener('DOMContentLoaded', async() => {
+document.addEventListener('DOMContentLoaded', () => {
 
     // Déclaration des variables importantes
 
@@ -12,17 +12,24 @@ document.addEventListener('DOMContentLoaded', async() => {
     let tabIndex = 0
     let progressValue = 0
     
-    // Ajout d'un EventListener sur chaque bouton de pagination
+    // Ajout d'un EventListener sur chaque bouton radio pour gérer la pagination
+
     radioButtonElementRow.forEach( siblingsRadioBtnElementsRow => {
+
         const siblingsRadioBtnElements = siblingsRadioBtnElementsRow.querySelectorAll('input[type=radio]')
+        
         siblingsRadioBtnElements.forEach( radioBtnElement => {
 
             radioBtnElement.addEventListener('click', () => {
+
                 nextButton.removeAttribute('disabled')
                 radioBtnElement.setAttribute('checked', 'true')
+
             })
         })
     })
+
+    // Ajout d'un EventListener sur chaque tab pour gérer la pagination
 
     previousButton.addEventListener('click', () => {
         // Gestion de l'état du bouton 'Suivant'
@@ -52,7 +59,7 @@ document.addEventListener('DOMContentLoaded', async() => {
         // Vérification si l'index est différent de 10 (correspond aux Résultats)
         if (tabIndex < 10) {
             progressValue += 10
-            nextElementToggle(allTabs, tabIndex, progressValue, nextButton)
+            nextElementToggle(allTabs, tabIndex, progressValue, nextButton, radioButtonElementRow)
             tabIndex++
         }
         
@@ -70,7 +77,7 @@ document.addEventListener('DOMContentLoaded', async() => {
 // <->  FONCTIONS
 
 // Fonction pour activer le tab suivant en simulant un click
-const nextElementToggle = (allTabs, tabIndex, progressValue, nextButtonElement) => {
+const nextElementToggle = (allTabs, tabIndex, progressValue, nextButtonElement, radioBtnElementRow) => {
 
     const nextTab = allTabs[tabIndex + 1]
     nextTab.removeAttribute('disabled')
@@ -78,7 +85,12 @@ const nextElementToggle = (allTabs, tabIndex, progressValue, nextButtonElement) 
 
     updateProgressBar(progressValue)
     allTabs[tabIndex].setAttribute('disabled', 'true')
-    nextButtonElement.setAttribute('disabled', 'true')
+
+    // 
+    if (radioBtnElementRow[tabIndex+1].querySelector('input[type=radio][checked]') === null) {
+        nextButtonElement.setAttribute('disabled', 'true')
+    }
+    
 }
 
 // Fonction pour activer le tab précédent en simulant un click
@@ -86,11 +98,10 @@ const previousElementToggle = (allTabs, tabIndex, progressValue, nextButtonEleme
     const previousTab = allTabs[tabIndex - 1]
     previousTab.removeAttribute('disabled')
     previousTab.click()
+    
 
     updateProgressBar(progressValue)
     allTabs[tabIndex].setAttribute('disabled', 'true')
-    nextButtonElement.setAttribute('disabled', 'true')
-    console.log()
 }
 
 // Fonction pour update la progress bar 
@@ -128,7 +139,7 @@ const resultsMenu = (nextButton, previousButton) => {
         data: {
             labels: ['Bonnes réponses', 'Mauvaises réponses'],
         datasets: [{
-            label: 'Nombre :',
+            label: 'Nombre ',
             data: [correctAnswers, fail],
             backgroundColor: [
                 'rgb(0, 255, 0)',
@@ -139,6 +150,5 @@ const resultsMenu = (nextButton, previousButton) => {
         }]
         }
     })
-
     
 }
