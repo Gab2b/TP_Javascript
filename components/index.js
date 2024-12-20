@@ -77,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // <->  FONCTIONS
 
 // Fonction pour activer le tab suivant en simulant un click
+
 const nextElementToggle = (allTabs, tabIndex, progressValue, nextButtonElement, radioBtnElementRow) => {
 
     const nextTab = allTabs[tabIndex + 1]
@@ -86,16 +87,23 @@ const nextElementToggle = (allTabs, tabIndex, progressValue, nextButtonElement, 
     updateProgressBar(progressValue)
     allTabs[tabIndex].setAttribute('disabled', 'true')
 
-    // 
-    if (radioBtnElementRow[tabIndex+1].querySelector('input[type=radio][checked]') === null) {
-        nextButtonElement.setAttribute('disabled', 'true')
+    // Désactivation du bouton 'Suivant' si aucun bouton radio n'est sélectionné 
+    // ( Permet de ne pas avoir à resélectionner un bouton radio si on revient en arrière )
+
+    if (tabIndex !== 9) {
+        if (radioBtnElementRow[tabIndex+1].querySelector('input[type=radio][checked]') === null) {
+            nextButtonElement.setAttribute('disabled', 'true')
+        }
     }
     
 }
 
 // Fonction pour activer le tab précédent en simulant un click
+
 const previousElementToggle = (allTabs, tabIndex, progressValue, nextButtonElement) => {
+
     const previousTab = allTabs[tabIndex - 1]
+
     previousTab.removeAttribute('disabled')
     previousTab.click()
     
@@ -107,6 +115,7 @@ const previousElementToggle = (allTabs, tabIndex, progressValue, nextButtonEleme
 // Fonction pour update la progress bar 
 
 const updateProgressBar = (value) => {
+
     const progressBarElement = document.querySelector('.progress-bar')
 
     progressBarElement.setAttribute('aria-valuenow', value)
@@ -117,12 +126,14 @@ const updateProgressBar = (value) => {
 // Fonction pour gérer le menu des résultats
 
 const resultsMenu = (nextButton, previousButton) => {
+
     nextButton.setAttribute('disabled', 'true')
     previousButton.setAttribute('disabled', 'true')
 
     let correctAnswers = 0
 
     // Récupération des résultats des boutons radio
+
     const questionSelectRadioBtnElements = document.querySelectorAll('input[type=radio][value="maybetheanswer"][checked]')
 
     questionSelectRadioBtnElements.forEach( radiobtn => {
@@ -131,8 +142,7 @@ const resultsMenu = (nextButton, previousButton) => {
 
     const fail = 10 - correctAnswers
 
-    console.log(correctAnswers)
-    console.log(fail)
+    // Affichage des résultats avec le Doughnut
 
     new Chart(document.getElementById("my-chart"), {
         type: 'doughnut',
